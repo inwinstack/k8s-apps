@@ -26,37 +26,24 @@ spec:
              mountPath: /var/lib/kafka/
       containers:
         - name: kafka
-          image: kairen/kafka:1.0.0
-          # env:
-          #   - name: KAFKA_ADVERTISED_HOST
-          #     value: "172.22.132.10"
-          #   - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-          #     value: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-          #   - name: KAFKA_ADVERTISED_PROTOCOL_NAME
-          #     value: OUTSIDE
-          #   - name: KAFKA_ADVERTISED_PORT
-          #     value: "9094"
-          #   - name: KAFKA_PROTOCOL_NAME
-          #     value: INSIDE
-          #   - name: KAFKA_PORT
-          #     value: "9092"
+          image: kairen/kafka:1.0.1
+          env:
+            - name: ADVERTISED_ADDRESS
+              value: "172.22.132.50:32400"
           ports:
-            - name: kafka
+            - name: inside
               containerPort: 9092
               protocol: TCP
+            - name: outside
+              containerPort: 9094
+            - name: jmx
+              containerPort: 5555
           volumeMounts:
             - name: kafka-storage
               mountPath: /var/lib/kafka/
-          livenessProbe:
-            exec:
-              command:
-              - "healthcheck"
-            initialDelaySeconds: 15
-            timeoutSeconds: 5
           readinessProbe:
-            exec:
-              command:
-              - "healthcheck"
+            tcpSocket:
+              port: 9092
             initialDelaySeconds: 15
             timeoutSeconds: 5
   volumeClaimTemplates:
@@ -66,5 +53,5 @@ spec:
         storageClassName: rbd
         resources:
           requests:
-            storage: 5Gi
+            storage: 10Gi
         accessModes: [ "ReadWriteOnce" ]

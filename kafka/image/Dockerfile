@@ -11,7 +11,7 @@ RUN set -ex; \
     chown "$KAFKA_USER:$KAFKA_USER" "$KAFKA_DATA_DIR" "$KAFKA_HOME"
 
 ARG KAFKA_VERSION=1.0.0
-ARG KAFKA_DIST=kafka_2.11-1.0.0
+ARG KAFKA_DIST=kafka_2.12-1.0.0
 
 RUN set -ex; \
   apk add --no-cache wget gpgme bash && \
@@ -30,7 +30,6 @@ USER $KAFKA_USER:$KAFKA_USER
 
 COPY ./config/ $KAFKA_HOME/config/
 COPY ./scripts/entrypoint.sh /usr/local/bin/entrypoint
-COPY ./scripts/healthcheck.sh /usr/local/bin/healthcheck
 
 EXPOSE 9092
 
