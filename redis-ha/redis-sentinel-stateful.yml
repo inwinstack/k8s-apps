@@ -1,23 +1,23 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: sts-redis-slave
+  name: sts-redis-sentinel
 spec:
-  serviceName: "svc-redis-slave"
+  serviceName: "svc-redis-sentinel"
   replicas: 3
   template:
     metadata:
       labels:
-        name: sts-redis-slave
+        name: sts-redis-sentinel
         environment: test
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: cntr-redis-slave
+      - name: cntr-redis-sentinel
         image: inwinstack/redis:4.0.8
         imagePullPolicy: Always
         env:
-        - name: SLAVE
+        - name: SENTINEL
           value: "true"
         - name: MASTER_HOST
           value: sts-redis-master-0.svc-redis-master
@@ -27,20 +27,7 @@ spec:
           value: sts-redis-sentinel-0.svc-redis-sentinel
         - name: SENTINEL_PORT
           value: "26379"
+        - name: SENTINEL_SVC
+          value: svc-redis-sentinel
         ports:
-        - containerPort: 6379
-        volumeMounts:
-        - name: redisslave
-          mountPath: /data/redis
-        securityContext:
-          capabilities: {}
-          privileged: true
-  volumeClaimTemplates:
-  - metadata:
-      name: redisslave
-    spec:
-      storageClassName: rbd
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
+        - containerPort: 26379

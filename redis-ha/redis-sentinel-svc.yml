@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: svc-redis-sentinel
   labels:
-    app: redis-ha
-    role: service
-  name: redis-sentinel
+    name: svc-redis-sentinel
 spec:
   ports:
   - port: 26379
-    protocol: TCP
     targetPort: 26379
+  clusterIP: None
   selector:
-    redis-sentinel: "true"
-  sessionAffinity: None
+    name: sts-redis-sentinel
