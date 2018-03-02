@@ -13,7 +13,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: cntr-redis-sentinel
+      - name: redis-sentinel
         image: inwinstack/redis:4.0.8
         imagePullPolicy: Always
         env:
